@@ -1,0 +1,20 @@
+rent 1 lady 00001 0
+accept
+return 6 00001 10
+rent 6 electric 00018 19
+accept
+return 1 00018 29
+rent 3 road 00059 39
+accept
+return 4 00059 53
+rent 3 electric 00074 65
+accept
+rent 6 road 00093 65
+accept
+return 2 00093 71
+return 5 00074 80
+rent 4 electric 00005 94
+accept
+return 6 00005 104
+rent 5 electric 00013 111
+accept

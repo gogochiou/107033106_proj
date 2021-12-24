@@ -8,6 +8,14 @@
     > 2.解決 .h 檔案連結問題 <br>
 - 12/22
     > 1.成功讀取檔案並初始化station (之前沒發現split string的方法，會漏掉最後一筆資料)
+- 12/23
+    >1.寫完station 和 bike的初始化程式
+- 12/24
+    >1.完成user的程式  <br>
+    >2.完成normal的版本(還沒輸出status.txt)，有個bug尚未解決
+    >>BUG : <br> 
+    關掉calculateRevenue(userID, 0)後，再bike pop的部分，出現double free的error <br>
+    若再把BikeList::pop()內的 delete temp註解掉，程式則會運行到一半卡住
 
 
 ## 學習日誌
