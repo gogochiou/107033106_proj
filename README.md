@@ -13,10 +13,12 @@
 - 12/24
     >1.完成user的程式  <br>
     >2.完成normal的版本(還沒輸出status.txt)，有個bug尚未解決
-    >>BUG : <br> 
-    關掉calculateRevenue(userID, 0)後，再bike pop的部分，出現double free的error <br>
-    若再把BikeList::pop()內的 delete temp註解掉，程式則會運行到一半卡住
-
+    ***
+    BUG : <br> 
+    &emsp;&emsp;關掉calculateRevenue(userID, 0)後，再bike pop的部分，出現double free的error ；若再把BikeList::pop()內的 delete temp註解掉，程式則會運行到一半卡住。
+- 12/25 <br>
+    >1.解決12/24的Bug <br>
+    >2.完成status.txt的輸出設定 (part1完成) 
 
 ## 學習日誌
 **1. C++讀檔** <br>
