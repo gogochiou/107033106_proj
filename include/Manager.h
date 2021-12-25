@@ -28,13 +28,13 @@ class Manager{
 private:
     /* data */
     Map* map;
-    Station* stationList;
+    Station* stationList; //store with starting from 0
     Fee fee;
     userList* user_list;
 
     /* output use */
     ofstream normal_res; //part1_response.txt output
-    ofstream normal_status; //part1_status.txt output
+    ofstream status_file; //status.txt output
     double n_revenue;
     double a_revenue;
 
@@ -48,6 +48,7 @@ public:
 
     void NormalPolicy();
     void calculateRevenue(int, int);
+    void status_output(string);
 };
 
 #endif //_MANAGER_H_

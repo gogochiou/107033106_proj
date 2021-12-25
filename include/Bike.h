@@ -30,6 +30,7 @@ public:
     int pop(); // return bike id
     Bike* find_prior(int);
 
+    string* output_bike(int);
     void print_list();
 };
 

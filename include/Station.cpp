@@ -28,20 +28,14 @@ void Station::Init(string *input){
         road_list->push(s_num, i);
 }
 
-bool Station::if_haveBike(string type){
-    if(type == "electric"){
-        if(elec_num!=0)
-            return true;
-    }
-    else if(type == "lady"){
-        if(lady_num!=0)
-            return true;
-    }
-    else if(type == "road"){
-        if(road_num!=0)
-            return true;
-    }
-    return false;
+int Station::if_haveBike(string type){
+    if(type == "electric")
+        return elec_num;
+    else if(type == "lady")
+        return lady_num;
+    else if(type == "road")
+        return road_num;
+    return 0;
 }
 
 int Station::rent_bike(string type){
@@ -61,31 +55,46 @@ int Station::rent_bike(string type){
 }
 
 void Station::return_bike(string type, int b_id){
-    int s_num = b_id/100;
-    int b_num = b_id%100;
+    int station_num = b_id/100;
+    int bike_num = b_id%100;
     if(type == "electric"){
         elec_num = elec_num+1;
-        elec_list->push(s_num, b_num);
+        elec_list->push(station_num, bike_num);
     }
     else if(type == "lady"){
         lady_num = lady_num+1;
-        lady_list->push(s_num, b_num);
+        lady_list->push(station_num, bike_num);
     }
     else if(type == "road"){
         road_num = road_num+1;
-        road_list->push(s_num, b_num);
+        road_list->push(station_num, bike_num);
     }
 }
 
-void Station::show(){
+string* Station::output_list(int type_count){
+    if(type_count==0)
+        return elec_list->output_bike(elec_num);
+    else if(type_count==1)
+        return lady_list->output_bike(lady_num);
+    else
+        return road_list->output_bike(road_num);
+}
+
+void Station::show(string type){
     cout << "Station : " << s_num << endl;
-    cout << "1.elec_num - " << elec_num <<endl;
-    cout << "  ";
-    elec_list->print_list();
-    cout << "2.lady_num - " << lady_num <<endl;
-    cout << "  ";
-    lady_list->print_list(); 
-    cout << "3.road_num - " << road_num <<endl;
-    cout << "  ";
-    road_list->print_list();  
+    if(type == "electric" || type == "all"){
+        cout << "elec_num - " << elec_num <<endl;
+        cout << "  ";
+        elec_list->print_list();
+    }
+    if(type == "lady" || type == "all"){
+        cout << "lady_num - " << lady_num <<endl;
+        cout << "  ";
+        lady_list->print_list();
+    }
+    if(type == "road" || type == "all"){ 
+        cout << "road_num - " << road_num <<endl;
+        cout << "  ";
+        road_list->print_list();
+    }  
 }

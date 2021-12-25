@@ -20,7 +20,7 @@ void BikeList::push(int station_num, int bike_num){
         if(id < first->ID){
             Bike* new_bike = new Bike(station_num, bike_num, first);
             first = new_bike;
-            delete new_bike;
+            new_bike = NULL;
             return;
         }
         // add at other position
@@ -29,7 +29,8 @@ void BikeList::push(int station_num, int bike_num){
         Bike* temp = current->next;
         new_bike->next = temp;
         current->next = new_bike;
-        delete temp, new_bike;
+        temp = NULL;
+        new_bike = NULL;
     }
 }
 
@@ -40,6 +41,7 @@ int BikeList::pop(){
     Bike* temp = first;
     first = first->next;
     delete temp;
+    temp = NULL;//have bug with double free problem
     return id;
 }
 
@@ -53,6 +55,20 @@ Bike* BikeList::find_prior(int id){
             comparing=false;
     }
     return current;
+}
+
+string* BikeList::output_bike(int quantity_){
+    string* output = new string[quantity_];
+    Bike* current = first;
+    for(int i=0; i < quantity_; i++){
+        if(current==NULL){
+            cout << "Output failed!!"<<endl;
+            break;
+        }
+        output[i] = to_string(current->ID);
+        current = current->next;
+    }
+    return output;
 }
 
 void BikeList::print_list(){

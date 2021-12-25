@@ -24,10 +24,11 @@ public:
     ~Station(){};
 
     void Init(string *); //initialize the station
-    bool if_haveBike(string);
+    int if_haveBike(string); //return bike_num(quantity)
     int rent_bike(string);
-    void return_bike(string, int); 
-    void show();
+    void return_bike(string, int);
+    string* output_list(int); // int for count : 0 is elec, 1 is lady, 2 is road
+    void show(string);
 };
 
 #endif //_STATION_H_

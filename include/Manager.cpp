@@ -61,12 +61,12 @@ void Manager::readfile(){
         stationList[stoi(token[0])-1].Init(token); // initial each station
     }
     s_file.close();
-    cout << endl;
+    // cout << endl;
 
     /* 2.map read file */
     map = new Map(s_quantity);
-    map->show();
-    cout << endl;
+    // map->show();
+    // cout << endl;
 
     /* 3.read fee */
     ifstream f_file("./test_case/fee.txt",ifstream::in);
@@ -133,10 +133,11 @@ void Manager::NormalPolicy(){
         if(token[0]=="rent"){
             // check if have bike
             cout << "Rent by " << stoi(token[3])<<endl;
-            if(stationList[s_num-1].if_haveBike(token[2])){
+            if( stationList[s_num-1].if_haveBike(token[2])!=0 ){
                 normal_res<< "accept" << endl;
                 cout << "type : "<<token[2]<<endl;
                 int rent_bikeID = stationList[s_num-1].rent_bike(token[2]);
+                cout << "bikeID : "<<rent_bikeID<<endl;
                 int userID = stoi(token[3]);
                 user_list->giveResponse(userID, token[2], 
                                         rent_bikeID, 0);
@@ -150,12 +151,15 @@ void Manager::NormalPolicy(){
             string b_type = user_list->returnBikeType(userID);
             int b_id = user_list->returnBikeID(userID);
             stationList[s_num-1].return_bike(b_type, b_id);
-            // calculateRevenue(userID, 0);
+            stationList[s_num-1].show(b_type);
+            calculateRevenue(userID, 0);
         }
-        cout << " mission complete "<<endl;
+        cout << "-------------"<<endl;
     }
     input_file.close();
     normal_res.close();
+
+    status_output("Normal");
     cout <<"normal policy revenue : "<< n_revenue << endl;
     
 }
@@ -192,5 +196,48 @@ void Manager::calculateRevenue(int userID, int waiting_time){
 
     /* calculate */
     n_revenue = n_revenue + fee_rate*riding_time - waiting_time*fee.waiting;
+}
 
+void Manager::status_output(string policy_){
+    string* output;
+    double output_revenue = -1;
+    if(policy_ == "Normal"){
+        output_revenue = n_revenue;
+        status_file.open("./part1_status.txt",ios::out|ios::trunc);
+    }
+    else if(policy_ == "Advanced"){
+        output_revenue = a_revenue;
+        status_file.open("./part2_status.txt",ios::out|ios::trunc);
+    }
+    else{
+        cout << "Wrong command for writing status file !"<<endl;
+        return;
+    }
+
+    for(int i=0; i < s_quantity; i++){
+        status_file << i+1 << ":" <<endl;
+        for(int j=0; j < 3; j++){
+            int bike_quantity=0;
+            if(j==0){
+                status_file << "electric:";
+                bike_quantity = stationList[i].if_haveBike("electric");
+            }
+            else if(j==1){
+                status_file << "lady:";
+                bike_quantity = stationList[i].if_haveBike("lady");
+            }
+            else{
+                status_file << "road:";
+                bike_quantity = stationList[i].if_haveBike("road");
+            }
+            output = stationList[i].output_list(j);
+            // int bike_quantity = sizeof(output)/sizeof(output[0]); //output is a pointer, so it will return sizeof a pointer
+            for(int k=0; k < bike_quantity; k++){
+                status_file << " " << output[k];
+            }
+            status_file << endl;
+        }
+    }
+    status_file << output_revenue;
+    status_file.close();
 }
