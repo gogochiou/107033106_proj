@@ -11,22 +11,22 @@
 using namespace std;
 
 struct Rate{
-    double discount;
-    double regular;
+    int discount;
+    int regular;
 };
 
 struct Fee{
     Rate elec;
     Rate lady;
     Rate road;
-    double waiting;
+    int waiting;
     double switching;
-    double transferring;
+    int transferring;
 };
 
 class Manager{
 private:
-    /* data */
+    /* input data */
     Map* map;
     Station* stationList; //store with starting from 0
     Fee fee;
@@ -35,18 +35,21 @@ private:
     /* output use */
     ofstream normal_res; //part1_response.txt output
     ofstream status_file; //status.txt output
-    double n_revenue;
-    double a_revenue;
+    int n_revenue;
+    int a_revenue;
 
+    /* determine strategy use data */
     int s_quantity;
 
 public:
     Manager(/* args */);
     ~Manager(){};
     void readfile();
+    void readstation(bool);
     void writeFee( Rate&, ifstream&);
 
     void NormalPolicy();
+    void AdvancedPolicy(); 
     void calculateRevenue(int, int);
     void status_output(string);
 };

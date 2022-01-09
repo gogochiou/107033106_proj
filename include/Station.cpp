@@ -83,18 +83,18 @@ string* Station::output_list(int type_count){
 void Station::show(string type){
     cout << "Station : " << s_num << endl;
     if(type == "electric" || type == "all"){
-        cout << "elec_num - " << elec_num <<endl;
-        cout << "  ";
+        cout << "  elec_num - " << elec_num <<endl;
+        cout << "    ";
         elec_list->print_list();
     }
     if(type == "lady" || type == "all"){
-        cout << "lady_num - " << lady_num <<endl;
-        cout << "  ";
+        cout << "  lady_num - " << lady_num <<endl;
+        cout << "    ";
         lady_list->print_list();
     }
     if(type == "road" || type == "all"){ 
-        cout << "road_num - " << road_num <<endl;
-        cout << "  ";
+        cout << "  road_num - " << road_num <<endl;
+        cout << "    ";
         road_list->print_list();
     }  
 }

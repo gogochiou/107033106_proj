@@ -16,6 +16,7 @@ struct Request{
 };
 
 struct Response{
+    string command; // accept, wait, change, reject
     string b_type;
     int b_id; // given bike id
     int rent_time;
@@ -49,7 +50,7 @@ public:
     void writeUser(string);
     void addRenter(string*);
     void addReturn(string*);
-    void giveResponse(int, string, int, int);
+    void giveResponse(int, string, string, int, int);
     string returnBikeType(int);
     int returnBikeID(int);
     int returnRideTime(int);

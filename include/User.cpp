@@ -3,6 +3,7 @@
 User::User(){
     req.rent_time = -1;
     req.return_time = 1441;
+    res.b_id = -1;
 }
 
 userList::userList (){
@@ -56,6 +57,7 @@ void userList::addRenter(string* input){
     users[id].req.b_type = input[2];
     users[id].userID = id;
     users[id].req.rent_time = stoi(input[4]);
+    users[id].res.b_id = -1;
 }
 
 void userList::addReturn(string* input){
@@ -66,8 +68,9 @@ void userList::addReturn(string* input){
     users[id].riding_time = users[id].req.return_time-users[id].req.rent_time;
 }
 
-void userList::giveResponse(int user_id, string bike_type,
+void userList::giveResponse(int user_id, string command, string bike_type,
                             int bike_id, int wait_time){// response renting bike id and type + wait_time
+    users[user_id].res.command = command;
     users[user_id].res.b_type = bike_type;
     users[user_id].res.b_id = bike_id;
     users[user_id].res.rent_time = users[user_id].req.rent_time + wait_time;

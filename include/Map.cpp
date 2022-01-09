@@ -7,10 +7,14 @@ Map::Map(int vertix){
     station_num = vertix;
     min_time = new int*[station_num];
     for(int i=0; i<station_num; i++)
-        min_time[i] = new int(INF);
+        min_time[i] = new int[station_num];
     //set 0 for self to self
-    for(int i=0; i<station_num; i++)
+    for(int i=0; i<station_num; i++){
+        for(int j=i; j<station_num; j++){
+            min_time[i][j] = INF;
+        }
         min_time[i][i] = 0;
+    }
 
     /* 2.open file to know distance */
     ifstream m_file("./test_case/map.txt"); //map file

@@ -1,4 +1,5 @@
 #include "./Manager.h"
+#include <math.h>
 
 Manager::Manager(){
     cout<< "setting Manager !"<<endl;
@@ -14,53 +15,8 @@ Manager::Manager(){
 
 void Manager::readfile(){
     /* 1.station read file */
-    //relative path is decided by where(path in terminal) you execute your code 
-    ifstream s_file("./test_case/station.txt",ifstream::in);
-    string s;
-    string delimiter=" ";
-    string token[4];
-    size_t pos=0;
-    if (s_file.is_open())
-        cout << "open station file"<<endl;
-    else
-        cout << "failed to open station file"<<endl;
-
-    /* 1-1.get last line to know how many station */
-    s_file.seekg(-1,ios_base::end); // go to one spot before EOF
-    bool keepLooking = true;
-    while(keepLooking){
-        char ch;
-        s_file.get(ch);
-        if((int)s_file.tellg() <= 1) {             // If the data was at or before the 0th byte
-            s_file.seekg(0);                       // The first line is the last line
-            keepLooking = false;                   // So stop there
-        }
-        else if (ch == '\n'){
-            keepLooking = false;
-        }
-        else
-            s_file.seekg(-2, ios_base::cur);
-    }
-    getline(s_file, s);
-    if( (pos = s.find(delimiter))!=string::npos){
-        s_quantity = stoi(s.substr(0, pos));
-        stationList = new Station[s_quantity];//init station list
-    }
-    s_file.clear(); // important to let us read file again
-    s_file.seekg(0, ios::beg); // make cursor back to begin
-
-    while (getline(s_file, s)){
-        for(int i=0; i<4; i++){ //each line, we need read in 4 data
-            if ((pos = s.find(delimiter))!=string::npos){
-                token[i] = s.substr(0, pos);
-                s.erase(0, pos+delimiter.size());
-            }
-            else
-                token[i] = s;//final words
-        }
-        stationList[stoi(token[0])-1].Init(token); // initial each station
-    }
-    s_file.close();
+    stationList = NULL;//init stationList as NULL
+    readstation(false); 
     // cout << endl;
 
     /* 2.map read file */
@@ -70,6 +26,7 @@ void Manager::readfile(){
 
     /* 3.read fee */
     ifstream f_file("./test_case/fee.txt",ifstream::in);
+    string s;
     if (f_file.is_open())
         cout << "open fee file"<<endl;
     else
@@ -89,7 +46,67 @@ void Manager::readfile(){
 
     /* 4.setting user */
     user_list = new userList();
-    // user_list->showInfo(99);
+    // user_list->showInfo(450);
+}
+
+void Manager::readstation(bool rebuild_){
+    //relative path is decided by where(path in terminal) you execute your code 
+    ifstream s_file("./test_case/station.txt",ifstream::in);
+    string s;
+    string delimiter=" ";
+    size_t pos=0;
+    string s_data[4]; // id, elec, lady, road
+    if (s_file.is_open())
+        cout << "open station file"<<endl;
+    else
+        cout << "failed to open station file"<<endl;
+
+    /* 1-1.get last line to know how many station*/
+    if(!rebuild_){
+        s_file.seekg(-1,ios_base::end); // go to one spot before EOF
+        bool keepLooking = true;
+        while(keepLooking){
+            char ch;
+            s_file.get(ch);
+            if((int)s_file.tellg() <= 1) {             // If the data was at or before the 0th byte
+                s_file.seekg(0);                       // The first line is the last line
+                keepLooking = false;                   // So stop there
+            }
+            else if (ch == '\n'){
+                keepLooking = false;
+            }
+            else
+                s_file.seekg(-2, ios_base::cur);
+        }
+        getline(s_file, s);
+        if( (pos = s.find(delimiter))!=string::npos){
+            s_quantity = stoi(s.substr(0, pos));
+        }
+        s_file.clear(); // important to let us read file again
+        s_file.seekg(0, ios::beg); // make cursor back to begin
+    }
+
+    delete[] stationList;
+    stationList = new Station[s_quantity];//init station list
+
+    while(s_file >> s_data[0] >> s_data[1] >> s_data[2] >> s_data[3]){
+        stationList[stoi(s_data[0])-1].Init(s_data);
+    }
+    
+    s_file.close();
+
+    /* old version of read file way */
+    // while (getline(s_file, s)){
+    //     for(int i=0; i<4; i++){ //each line, we need read in 4 data
+    //         if ((pos = s.find(delimiter))!=string::npos){
+    //             token[i] = s.substr(0, pos);
+    //             s.erase(0, pos+delimiter.size());
+    //         }
+    //         else
+    //             token[i] = s;//final words
+    //     }
+    //     stationList[stoi(token[0])-1].Init(token); // initial each station
+    // }
 }
 
 void Manager::writeFee(Rate& rate, ifstream& file){
@@ -103,7 +120,6 @@ void Manager::writeFee(Rate& rate, ifstream& file){
     rate.discount = stoi(s.substr(0, pos));
     s.erase(0, pos+delimiter.size());
     rate.regular = stoi(s);
-    // cout << rate.discount << " " << rate.regular << endl;
 }
 
 void Manager::NormalPolicy(){
@@ -132,40 +148,57 @@ void Manager::NormalPolicy(){
         int s_num = stoi(token[1]); //rent or return station number
         if(token[0]=="rent"){
             // check if have bike
-            cout << "Rent by " << stoi(token[3])<<endl;
+            int userID = stoi(token[3]);
             if( stationList[s_num-1].if_haveBike(token[2])!=0 ){
                 normal_res<< "accept" << endl;
-                cout << "type : "<<token[2]<<endl;
                 int rent_bikeID = stationList[s_num-1].rent_bike(token[2]);
-                cout << "bikeID : "<<rent_bikeID<<endl;
-                int userID = stoi(token[3]);
-                user_list->giveResponse(userID, token[2], 
+                user_list->giveResponse(userID, "accept", token[2], 
                                         rent_bikeID, 0);
             }
-            else
+            else{
                 normal_res << "reject" << endl;
+                user_list->giveResponse(userID, "accept", "no", -1, 0);
+            }
         }
         else if(token[0]=="return"){
-            cout << "Return by " << stoi(token[2])<<endl;
             int userID = stoi(token[2]);
             string b_type = user_list->returnBikeType(userID);
             int b_id = user_list->returnBikeID(userID);
-            stationList[s_num-1].return_bike(b_type, b_id);
-            stationList[s_num-1].show(b_type);
+            if(b_id == -1){
+                /* cause b_type will be nothing if we did not borrow,
+                   so return_bike will still refuse the rent command
+                   in old version(without this conditional expressions) */
+                cout << " We did not borrow bike to user " << b_type <<endl;
+            }
+            else{
+                stationList[s_num-1].return_bike(b_type, b_id);
+            }
+            // stationList[s_num-1].show(b_type);
             calculateRevenue(userID, 0);
+            // normal_res << "Current revenue : " << n_revenue <<endl;
         }
-        cout << "-------------"<<endl;
     }
     input_file.close();
     normal_res.close();
 
     status_output("Normal");
     cout <<"normal policy revenue : "<< n_revenue << endl;
-    
+}
+
+void Manager::AdvancedPolicy(){
+    /* 1.rebuild station */
+    readstation(true);
+    // cout << "------------------------------------------" <<endl;
+    // for(int i=0; i<s_quantity; i++)
+    //     stationList[i].show("all");
+    // cout << "------------------------------------------" <<endl;
+
+    /* 2.open file of user and start */
+
 }
 
 void Manager::calculateRevenue(int userID, int waiting_time){
-    double fee_rate = 0.0;
+    int fee_rate = 0;
     /* check if use regular or discount */
     int riding_time = user_list->returnRideTime(userID);
     int* SandE = user_list->returnSandE(userID);//start and end station num
@@ -193,14 +226,18 @@ void Manager::calculateRevenue(int userID, int waiting_time){
         else
             fee_rate = fee.road.discount;
     }
+    // else
+    //     cout << "wrong name : " << b_type << "  QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ!" <<endl;
 
     /* calculate */
     n_revenue = n_revenue + fee_rate*riding_time - waiting_time*fee.waiting;
+    // cout << "fee rate : " << fee_rate << " ; riding time : " << riding_time << endl;
+    // cout << "now money : " <<  n_revenue << endl;
 }
 
 void Manager::status_output(string policy_){
     string* output;
-    double output_revenue = -1;
+    int output_revenue = -1;
     if(policy_ == "Normal"){
         output_revenue = n_revenue;
         status_file.open("./part1_status.txt",ios::out|ios::trunc);
