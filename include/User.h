@@ -16,11 +16,12 @@ struct Request{
 };
 
 struct Response{
-    string command; // accept, wait, change, reject
+    string command; // accept, wait, switch, reject, temp
     string b_type;
     int b_id; // given bike id
     int rent_time;
     int return_time;
+    int wait_time;
 };
 
 class User{
@@ -31,6 +32,7 @@ private:
     int riding_time;
     int start_station;
     int end_station;
+    int restbike; //for calculate limit rent
 
 public:
     friend userList;
@@ -50,11 +52,16 @@ public:
     void writeUser(string);
     void addRenter(string*);
     void addReturn(string*);
-    void giveResponse(int, string, string, int, int);
-    string returnBikeType(int);
+    void giveResponse(int, string, string, int, int, int); // manager1 use
+    void giveResponse(int, string, string, int, int); // manager2 use
+    string returnBikeType(int, string);
     int returnBikeID(int);
     int returnRideTime(int);
     int* returnSandE(int); // return start and end station num
+    string returnCommand(int);
+    int returnRestbike(int);
+    int returnReturnTime(int, string);
+    int returnWaitTime(int);
     void showInfo(int);
 };
 

@@ -3,6 +3,9 @@
 #define INF 99999
 
 Map::Map(int vertix){
+    map_min_t = INF;
+    map_max_t = -1;
+
     /* 1.init min_dis graph */
     station_num = vertix;
     min_time = new int*[station_num];
@@ -69,8 +72,28 @@ void Map::FloydWarshall(){
             }
         }
     }
+
+    /* find min and max of all min_time map */
+    for(int i=0; i < station_num; i++){
+        for(int j=0; j < station_num; j++){
+            if(min_time[i][j] < map_min_t){
+                map_min_t = min_time[i][j];
+            }
+            if(min_time[i][j] > map_max_t){
+                map_max_t = min_time[i][j];
+            }
+        }
+    }
 }
 
 int Map::get_minTime(int station_A, int station_B){
     return min_time[station_A-1][station_B-1];
+}
+
+int Map::get_mapMinTime(){
+    return map_min_t;
+}
+
+int Map::get_mapMaxTime(){
+    return map_max_t;
 }

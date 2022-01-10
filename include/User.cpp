@@ -69,16 +69,34 @@ void userList::addReturn(string* input){
 }
 
 void userList::giveResponse(int user_id, string command, string bike_type,
+                            int bike_id, int wait_time, int rest_bike){// response renting bike id and type + wait_time
+    users[user_id].res.command = command;
+    users[user_id].res.b_type = bike_type;
+    users[user_id].res.b_id = bike_id;
+    users[user_id].res.wait_time = wait_time;
+    users[user_id].res.rent_time = users[user_id].req.rent_time + wait_time;
+    users[user_id].res.return_time = users[user_id].res.return_time + wait_time;
+    users[user_id].restbike = rest_bike; // rest_bike = -1, when command is reject
+}
+
+void userList::giveResponse(int user_id, string command, string bike_type,
                             int bike_id, int wait_time){// response renting bike id and type + wait_time
     users[user_id].res.command = command;
     users[user_id].res.b_type = bike_type;
     users[user_id].res.b_id = bike_id;
+    users[user_id].res.wait_time = wait_time;
     users[user_id].res.rent_time = users[user_id].req.rent_time + wait_time;
     users[user_id].res.return_time = users[user_id].res.return_time + wait_time;
 }
 
-string userList::returnBikeType(int user_id){
-    return users[user_id].res.b_type;
+string userList::returnBikeType(int user_id, string resORreq){
+    if(resORreq == "response"){
+        return users[user_id].res.b_type;
+    }
+    else if(resORreq == "request"){
+        return users[user_id].req.b_type;
+    }
+    return "error";
 }
 
 int userList::returnBikeID(int user_id){
@@ -94,6 +112,31 @@ int* userList::returnSandE(int user_id){
     SandE[0] = users[user_id].start_station;
     SandE[1] = users[user_id].end_station;
     return SandE;
+}
+
+string userList::returnCommand(int user_id){
+    return users[user_id].res.command;
+}
+
+int userList::returnRestbike(int user_id){
+    return users[user_id].restbike;
+}
+
+int userList::returnReturnTime(int user_id, string resORreq){
+    if(resORreq == "response"){
+        return users[user_id].res.return_time;
+    }
+    else if(resORreq == "request"){
+        return users[user_id].req.return_time;
+    }
+    return -1;
+}
+
+int userList::returnWaitTime(int user_id){
+    if(users[user_id].res.command == "wait")
+        return users[user_id].res.wait_time;
+    
+    return 0;
 }
 
 void userList::showInfo(int id){

@@ -18,10 +18,10 @@ int main(){
     end = clock();
     cout << "Manager1 : " << (double)(end - start)/CLOCKS_PER_SEC * 1000.0 << "ms." << endl;
 
-    // start = clock();
-    // manager.AdvancedPolicy();
-    // end = clock();
-    // cout << "Manager2 : " << (double)(end - start)/CLOCKS_PER_SEC * 1000.0 << "ms." << endl;
+    start = clock();
+    manager.AdvancedPolicy();
+    end = clock();
+    cout << "Manager2 : " << (double)(end - start)/CLOCKS_PER_SEC * 1000.0 << "ms." << endl;
     
     return 0;
 }
